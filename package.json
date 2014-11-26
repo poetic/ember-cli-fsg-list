@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-fsg-list",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "directories": {
     "doc": "doc",
     "test": "test"
@@ -10,17 +10,20 @@
     "build": "ember build",
     "test": "ember test"
   },
-  "repository": "https://github.com/stefanpenner/ember-cli",
+  "repository": "https://github.com/poetic/ember-cli-fsg-list",
   "engines": {
     "node": ">= 0.10.0"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "filtered sorted grouped list component",
+    "list component",
+    "component"
   ],
   "ember-addon": {
     "configPath": "tests/dummy/config"
   },
-  "author": "",
+  "author": "Chun Yang",
   "license": "MIT",
   "devDependencies": {
     "body-parser": "^1.2.0",
