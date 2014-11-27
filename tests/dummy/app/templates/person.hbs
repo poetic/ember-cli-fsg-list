@@ -1,1 +1,7 @@
-{{item.id}}
+{{#with item}}
+<li>
+  <span class="id">{{id}}</span>
+  <span class="name">{{name}}</span>
+  <span class="occupation">{{occupation}}</span>
+</li>
+{{/with}}

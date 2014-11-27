@@ -2,13 +2,21 @@ import Ember from 'ember';
 
 var MainController = Ember.Controller.extend({
   list: [
-    {id: 1, name: 'Chun Yang'   , occupation: 'Web Developer'},
-    {id: 2, name: 'Dumy A'      , occupation: 'Web Developer'},
-    {id: 3, name: 'Rich Horn'   , occupation: 'QA'}           ,
-    {id: 4, name: 'Ben Horn'    , occupation: 'QA'}           ,
-    {id: 5, name: 'John Goodman', occupation: 'Manager'}      ,
-  ],
-  itemPartial: 'person'
+    {id: 1 , name: 'Chun Yang'       , occupation: 'Web Developer'} ,
+    {id: 2 , name: 'Dummy A'         , occupation: 'Web Developer'} ,
+    {id: 3 , name: 'Dummy B'         , occupation: 'QA'}            ,
+    {id: 4 , name: 'Ellen Degeneres' , occupation: 'QA'}            ,
+    {id: 5 , name: 'Jackie Chan'     , occupation: 'Manager'}       ,
+  ].map(function(obj){
+    return Ember.Object.create(obj);
+  }),
+  itemPartial: 'person',
+
+  filterTerm: '',
+  filterKeys: ['name'],
+  filterFn: function(){
+
+  },
 });
 
 export default MainController;

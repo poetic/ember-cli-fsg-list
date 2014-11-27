@@ -23,16 +23,28 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   // filter
   filterKeys: [],
   filterTerm: '',
-
-  filterFn: null,
+  filterTermPurified: function(){
+    return this.get('filterTerm').toLowerCase().replace(/\s+/g, '');
+  }.property('filterTerm'),
+  // implimentation of filter callback in ember Enumerable
+  // http://emberjs.com/api/classes/Ember.Enumerable.html#method_filter
+  filterFn: function(item){
+    var addString = function(result, key){
+      return result + item.get(key);
+    };
+    var stack = this.get('filterKeys').reduce(addString, '')
+                    .toLowerCase().replace(/\s+/g, '');
+    var needle = this.get('filterTermPurified');
+    return stack.indexOf(needle) > -1;
+  },
 
   _fList: function(){
     // do not filter if there is no filter keys or a filter term
-    var filterEnabled = this.get('filterTerm') && this.get('filterKeys') && this.get('filterFn');
+    var filterEnabled = this.get('filterTerm') && this.get('filterKeys') && this.filterFn;
     var list = this.get('list');
 
     if(filterEnabled){
-      return list.filter(this.filterFn);
+      return list.filter(this.filterFn.bind(this));
     } else {
       return list;
     }
@@ -40,19 +52,19 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
 
   // sort
   // TODO: the followng won't work, make a pull request to ember?
-  // sortOrder: []
-  // _fsList: Ember.computed.sort('_fList', 'sortOrder')
+  // sortOrders: []
+  // _fsList: Ember.computed.sort('_fList', 'sortOrders')
 
-  sortOrder: [],
+  sortOrders: [],
 
   _fsList: function(){
-    var sortEnabled = this.sortOrder && this.sortOrder.length;
+    var sortEnabled = this.get('sortOrders') && this.sortOrders.length;
     var fList = this.get('_fList');
 
     if(sortEnabled){
       return fList;
     } else {
-      return fList.sortBy.apply(fList, this.get('sortOrder'));
+      return fList.sortBy.apply(fList, this.get('sortOrders'));
     }
   }.property('_fList'),
 

@@ -1,7 +1,11 @@
 <h2>Main</h2>
+Filter: {{input value=filterTerm}}
+
 <ul>
   {{fsg-list
-    list=list
-    itemPartial=itemPartial
+    list        = list
+    itemPartial = itemPartial
+    filterKeys  = filterKeys
+    filterTerm  = filterTerm
   }}
 </ul>
