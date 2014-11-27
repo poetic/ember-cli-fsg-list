@@ -1,83 +1,102 @@
 import Ember from 'ember';
 
-FilteredSortedGroupedListComponent = Ember.Component.extend({
+var FilteredSortedGroupedListComponent = Ember.Component.extend({
   list: [],
 
+  // itemPartial
+  itemPartial: '',
+
+  // itemAction
   itemAction: null,
   actions: {
     selectItem: function(){
-      var cp = this;
-
-      if(!cp.get('itemAction')){
-        return
+      if(!this.get('itemAction')){
+        return;
       }
 
       var args = Array.prototype.slice.call(arguments);
       args.unshift('itemAction');
-      cp.sendAction.apply(cp, args);
+      this.sendAction.apply(this, args);
     }
   },
-
-  // classes and ids
-  listId: null,
-  listClass: null,
-  listPartial: '',
 
   // filter
   filterKeys: [],
   filterTerm: '',
 
-  _filter: function(){
-    new Fuse(cp.get('list'), { keys: cp.get('filterKeys') });
-  }.property('list.[]', 'filterKeys.[]'),
+  filterFn: null,
 
-  _filteredList: function(){
+  _fList: function(){
     // do not filter if there is no filter keys or a filter term
-    if(!cp.get('filterTerm') || cp.get('filterKeys').length === 0){
-      return cp.get('list');
-    }
+    var filterEnabled = this.get('filterTerm') && this.get('filterKeys') && this.get('filterFn');
+    var list = this.get('list');
 
-    // restric the search length to avoid error 32 chars
-    // Ignore extra long string then 32 (FOR NOW)
-    cp.get('_filter').search(cp.get('filterTerm').substr(0, 32) || '');
-  }.property('filterTerm', '_filter'),
+    if(filterEnabled){
+      return list.filter(this.filterFn);
+    } else {
+      return list;
+    }
+  }.property('filterTerm', 'filterKeys.[]'),
 
   // sort
   // TODO: the followng won't work, make a pull request to ember?
   // sortOrder: []
-  // _filteredSortedList: Ember.computed.sort('_filteredList', 'sortOrder')
+  // _fsList: Ember.computed.sort('_fList', 'sortOrder')
 
   sortOrder: [],
 
-  _filteredSortedList: function(){
-    list = cp.get('_filteredList')
-    list.sortBy.apply(list, cp.get('sortOrder'))
-  }.property('_filteredList'),
+  _fsList: function(){
+    var sortEnabled = this.sortOrder && this.sortOrder.length;
+    var fList = this.get('_fList');
+
+    if(sortEnabled){
+      return fList;
+    } else {
+      return fList.sortBy.apply(fList, this.get('sortOrder'));
+    }
+  }.property('_fList'),
 
   // group
-  groupBy: null,
+  groupFn: null,
   titleKeys: [],
 
-  _filteredSortedGroupedList: function(){
-    if(!cp.get('groupBy')){
-      return cp.get('_filteredSortedList');
+  _fsgList: function(){
+    var groupEnabled = this.get('groupFn');
+    var fsList = this.get('_fsList');
+
+    if(!groupEnabled){
+      return fsList;
     }
 
-    modifiedList = [];
-    groupedList = _.groupBy(cp.get('_filteredSortedList'), cp.get('groupBy'));
-    _.each(groupedList, function(records, key){
-      titleObj = {_isTitle: true, title: key};
-      cp.get('titleKeys').forEach(function(titleKey){
-        titleObj[titleKey] = records[0][titleKey];
-      });
-      modifiedList.pushObject(titleObj);
-      modifiedList.pushObjects(records);
-    });
-    modifiedList
-  }.property('_filteredSortedList'),
+    var groups = this._groupBy(this.get('_fsList'), this.get('groupFn'));
+    var fsgList = [];
+
+    // add items to the list
+    for(var key in groups){
+      var titleObj = {_isTitle: true, title: key};
+      fsgList.pushObject(titleObj);
+      fsgList.pushObjects(groups[key]);
+    }
+
+    return fsgList;
+  }.property('_fsList'),
+
+  _groupBy: function(list, groupFn){
+    var addItemToGroup = function(groups, item){
+      var key = groupFn(item);
+      if(groups[key]){
+        groups[key].push(item);
+      } else {
+        groups[key] = [item];
+      }
+      return groups;
+    };
+
+    return list.reduce(addItemToGroup, {});
+  },
 
   // result
-  modifiedList: Ember.computed.alias('_filteredSortedGroupedList')
-})
+  fsgList: Ember.computed.alias('_fsgList')
+});
 
 export default FilteredSortedGroupedListComponent;
