@@ -52,12 +52,14 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   _filterKeys: computed.keys('filterBy'),
   _filterFn: computed.fn('filterBy'),
   _defaultFilterFn: function(item){
-    var addString = function(result, key){
-      return result + item.get(key);
+    var purify = function(dirtyStr){
+      return dirtyStr.toLowerCase().replace(/\s+/g, '');
     };
-    var stack = this.get('_filterKeys').reduce(addString, '');
-    stack = this._purify(stack);
-    var needle = this._purify(this.get('filterTerm'));
+    var getValue = function(key){
+      return item.get(key);
+    };
+    var stack  = purify(this.get('_filterKeys').map(getValue).join(''));
+    var needle = purify(this.get('filterTerm'));
     return stack.indexOf(needle) > -1;
   },
 
@@ -109,17 +111,16 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
 
   // ---------- group
   groupBy: null,
-  titleKeys: [],
 
   _fsgList: function(){
-    var groupEnabled = this.get('groupBy');
-    var fsList = this.get('_fsList');
+    var groupBy = this.get('groupBy');
+    var list = this.get('_fsList');
 
-    if(!groupEnabled){
-      return fsList;
+    if(!groupBy){
+      return list;
     }
 
-    var groups = this._groupsFromList(this.get('_fsList'), this.get('groupBy'));
+    var groups  = this._groupsFromList(list, groupBy);
     var fsgList = this._listFromGroups(groups);
 
     return fsgList;
@@ -149,13 +150,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
     return list;
   },
 
-  // result
   fsgList: Ember.computed.alias('_fsgList'),
-
-  // helper fns
-  _purify: function(dirtyStr){
-    return dirtyStr.toLowerCase().replace(/\s+/g, '');
-  },
 });
 
 export default FilteredSortedGroupedListComponent;

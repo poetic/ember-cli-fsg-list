@@ -1,11 +1,11 @@
 {{#with item}}
 <li class="item">
   {{#if _isTitle}}
-  {{_title}}
+    <span class="title">{{_title}}</span>
   {{else}}
-  <span class="id">{{id}}</span>
-  <span class="name">{{name}}</span>
-  <span class="occupation">{{occupation}}</span>
+    <span class="id">{{id}}</span>
+    <span class="name">{{name}}</span>
+    <span class="occupation">{{occupation}}</span>
   {{/if}}
 </li>
 {{/with}}

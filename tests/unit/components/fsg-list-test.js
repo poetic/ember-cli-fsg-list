@@ -163,3 +163,39 @@ test('it can be sorted by a function', function(){
   var sequence = $('.item .id').text();
   deepEqual(sequence, '54321');
 });
+
+test('it can be grouped by a function', function(){
+  expect(3);
+
+  var component = this.subject();
+  component.set('list', list);
+  component.set('itemPartial', 'person');
+  component.set('groupBy', function(item){
+    return item.get('occupation');
+  });
+  this.append();
+
+  equal($('.item').length, 8);
+  equal($('.item .id').length, 5);
+  equal($('.item .title').length, 3);
+});
+
+test('ite can be filtered, sorted and grouped', function(){
+  expect(2);
+
+  var component = this.subject();
+  component.set('list', list);
+  component.set('itemPartial', 'person');
+  component.set('sortBy', ['name:desc']);
+  component.set('filterBy', ['name', 'occupation']);
+  component.set('filterTerm', 'm');
+  component.set('groupBy', function(item){
+    return item.get('occupation');
+  });
+  this.append();
+
+  equal($('.item .id').text(), '532', 'it is filtered and sorted');
+  equal($('.item .title').text().replace(/\s+/g, ''),
+        'ManagerQAWebDeveloper',
+        'it is grouped');
+});
