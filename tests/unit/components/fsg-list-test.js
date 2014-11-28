@@ -82,7 +82,7 @@ test('it should filter the list by filterTerm and filter(filterKeys)', function(
   component.set('list', list);
   component.set('itemPartial', 'person');
   component.set('filterTerm', 'Chun');
-  component.set('filter', ['name']);
+  component.set('filterBy', ['name']);
   this.append();
 
   Ember.run(function(){
@@ -106,7 +106,7 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
   component.set('list', list);
   component.set('itemPartial', 'person');
   component.set('filterTerm', 'Chun');
-  component.set('filter', function(item){
+  component.set('filterBy', function(item){
     return item.get('id') > 3;
   });
   this.append();
@@ -125,15 +125,23 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
   });
 });
 
-test('it can be sorted by sortOrders', function(){
-  expect(1);
+test('it can be sorted by an array of strings', function(){
+  expect(2);
 
   var component = this.subject();
   component.set('list', list);
   component.set('itemPartial', 'person');
-  component.set('sortOrders', ['occupation:desc', 'name:desc']);
+  component.set('sortBy', ['occupation:desc', 'name:desc']);
   this.append();
 
   var sequence = $('.item .id').text();
   deepEqual(sequence, '21435');
+
+  // change orders
+  Ember.run(function(){
+    component.set('sortBy', ['id']);
+  });
+
+  sequence = $('.item .id').text();
+  deepEqual(sequence, '12345');
 });

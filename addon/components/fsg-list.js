@@ -26,20 +26,20 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   // filter can be a function of an array of list item keys
   // function : function(item, index, list)
   // keys     : ['id', 'name']
-  filter: [],
+  filterBy: [],
 
   _filterKeys: function(){
-    var filter = this.get('filter');
+    var filter = this.get('filterBy');
     if(typeof filter !== 'function' && filter.length > 0) {
-      return this.get('filter');
+      return this.get('filterBy');
     }
-  }.property('filter.[]'),
+  }.property('filterBy.[]'),
 
   _filterFn: function(){
-    if(typeof this.get('filter') === 'function') {
-      return this.get('filter');
+    if(typeof this.get('filterBy') === 'function') {
+      return this.get('filterBy');
     }
-  }.property('filter'),
+  }.property('filterBy'),
 
   _defaultFilterFn: function(item){
     var addString = function(result, key){
@@ -67,9 +67,9 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   }.property('list.[]', 'filterTerm', '_filterKeys', '_filterFn'),
 
   // ---------- sort
+  sortBy: [],
   // TODO: the followng won't work, make a pull request to ember?
-  sortOrders: [],
-  _fsList: Ember.computed.sort('_fList', 'sortOrders'),
+  _fsList: Ember.computed.sort('_fList', 'sortBy'),
   // _fsList: function(){
   //   console.log('sort', this.get('sortOrders'));
   //   var sortEnabled = this.get('sortOrders') && this.get('sortOrders').length;
@@ -83,33 +83,26 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   // }.property('_fList'),
 
   // ---------- group
-  groupFn: null,
+  groupBy: null,
   titleKeys: [],
 
   _fsgList: function(){
-    var groupEnabled = this.get('groupFn');
+    var groupEnabled = this.get('groupBy');
     var fsList = this.get('_fsList');
 
     if(!groupEnabled){
       return fsList;
     }
 
-    var groups = this._groupBy(this.get('_fsList'), this.get('groupFn'));
-    var fsgList = [];
-
-    // add items to the list
-    for(var key in groups){
-      var titleObj = {_isTitle: true, title: key};
-      fsgList.pushObject(titleObj);
-      fsgList.pushObjects(groups[key]);
-    }
+    var groups = this._groupsFromList(this.get('_fsList'), this.get('groupBy'));
+    var fsgList = this._listFromGroups(groups);
 
     return fsgList;
   }.property('_fsList'),
 
-  _groupBy: function(list, groupFn){
+  _groupsFromList: function(list, groupBy){
     var addItemToGroup = function(groups, item){
-      var key = groupFn(item);
+      var key = groupBy(item);
       if(groups[key]){
         groups[key].push(item);
       } else {
@@ -119,6 +112,16 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
     };
 
     return list.reduce(addItemToGroup, {});
+  },
+
+  _listFromGroups: function(groups){
+    var list = [];
+    for(var key in groups){
+      var titleObj = {_isTitle: true, title: key};
+      list.pushObject(titleObj);
+      list.pushObjects(groups[key]);
+    }
+    return list;
   },
 
   // result

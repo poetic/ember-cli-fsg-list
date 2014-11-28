@@ -18,7 +18,7 @@ var MainController = Ember.Controller.extend({
     return item.get('id') > this.get('filterTerm');
   },
 
-  sortOrders: function(){
+  sortKeys: function(){
     var orders = [];
 
     ['occupationOrder', 'nameOrder'].forEach(function(orderKey){
@@ -29,6 +29,10 @@ var MainController = Ember.Controller.extend({
 
     return orders;
   }.property('occupationOrder', 'nameOrder'),
+
+  groupFn: function(item){
+    return item.occupation;
+  },
 
   actions: {
     toggleOrder: function(key){
