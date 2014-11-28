@@ -1,5 +1,26 @@
 import Ember from 'ember';
 
+// helpers
+var computed = {
+  keys: function(sourceKey){
+    return function(){
+      var source = this.get(sourceKey);
+      if(Ember.isArray(source) && source.length > 0) {
+        return source;
+      }
+    }.property(sourceKey + '.[]');
+  },
+
+  fn: function(sourceKey){
+    return function(){
+      var source = this.get(sourceKey);
+      if(typeof source === 'function') {
+        return source;
+      }
+    }.property(sourceKey);
+  },
+};
+
 var FilteredSortedGroupedListComponent = Ember.Component.extend({
   list: [],
 
@@ -28,19 +49,8 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   // keys     : ['id', 'name']
   filterBy: [],
 
-  _filterKeys: function(){
-    var filter = this.get('filterBy');
-    if(typeof filter !== 'function' && filter.length > 0) {
-      return this.get('filterBy');
-    }
-  }.property('filterBy.[]'),
-
-  _filterFn: function(){
-    if(typeof this.get('filterBy') === 'function') {
-      return this.get('filterBy');
-    }
-  }.property('filterBy'),
-
+  _filterKeys: computed.keys('filterBy'),
+  _filterFn: computed.fn('filterBy'),
   _defaultFilterFn: function(item){
     var addString = function(result, key){
       return result + item.get(key);
@@ -68,19 +78,34 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
 
   // ---------- sort
   sortBy: [],
-  // TODO: the followng won't work, make a pull request to ember?
-  _fsList: Ember.computed.sort('_fList', 'sortBy'),
-  // _fsList: function(){
-  //   console.log('sort', this.get('sortOrders'));
-  //   var sortEnabled = this.get('sortOrders') && this.get('sortOrders').length;
-  //   var fList = this.get('_fList');
 
-  //   if(sortEnabled){
-  //     return fList.sortBy.apply(fList, this.get('sortOrders'));
-  //   } else {
-  //     return fList;
-  //   }
-  // }.property('_fList'),
+  _sortKeys: computed.keys('sortBy'),
+  _sortFn: computed.fn('sortBy'),
+  _defaultSortFn: function(a, b){
+    var compareValue;
+    this.get('_sortKeys').some(function(metaKey){
+      var keys = metaKey.split(':');
+      var key = keys[0];
+      var asc = keys[1] === 'desc' ? -1 : 1;
+      var propA = a.get(key);
+      var propB = b.get(key);
+      compareValue =  Ember.compare(propA, propB) * asc;
+      return compareValue;
+    });
+    return compareValue || 0;
+  },
+
+  _fsList: function(){
+    var list = this.get('_fList');
+
+    if(this.get('_sortKeys')) {
+      return list.sort(this.get('_defaultSortFn').bind(this));
+    }
+    if(this.get('_sortFn')) {
+      return list.sort(this.get('_sortFn').bind(this));
+    }
+    return list;
+  }.property('_fList', '_sortKeys', '_sortFn'),
 
   // ---------- group
   groupBy: null,
@@ -117,7 +142,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   _listFromGroups: function(groups){
     var list = [];
     for(var key in groups){
-      var titleObj = {_isTitle: true, title: key};
+      var titleObj = {_isTitle: true, _title: key};
       list.pushObject(titleObj);
       list.pushObjects(groups[key]);
     }

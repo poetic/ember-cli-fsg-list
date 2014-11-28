@@ -12,12 +12,14 @@ var MainController = Ember.Controller.extend({
   }),
   itemPartial: 'person',
 
+  // ---------- Filter
   filterTerm: null,
   filterKeys: ['name'],
   filterFn: function(item){
     return item.get('id') > this.get('filterTerm');
   },
 
+  // ---------- Sort
   sortKeys: function(){
     var orders = [];
 
@@ -29,7 +31,11 @@ var MainController = Ember.Controller.extend({
 
     return orders;
   }.property('occupationOrder', 'nameOrder'),
+  sortFn: function(a, b){
+    return b.get('id') - a.get('id');
+  },
 
+  // ---------- Group
   groupFn: function(item){
     return item.occupation;
   },
