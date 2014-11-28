@@ -3,8 +3,6 @@ import {
   test
 } from 'ember-qunit';
 import Ember from 'ember';
-import startApp from '../../helpers/start-app';
-var App;
 
 // list data used for testing;
 var list = [
@@ -21,12 +19,6 @@ list = Ember.A(list);
 moduleForComponent('fsg-list', 'FsgListComponent', {
   // specify the other units that are required for this test
   needs: ['template:person'],
-  setup: function() {
-    App = startApp();
-  },
-  teardown: function() {
-    Ember.run(App, App.destroy);
-  }
 });
 
 test('it renders', function() {
@@ -49,7 +41,7 @@ test('it shows a list of partials', function(){
   component.set('itemPartial', 'person');
   this.append();
 
-  andThen(function(){
+  Ember.run(function(){
     var items = $('.item');
     list.forEach(function(item, index){
       var name = items.eq(index).find('.name').text();
@@ -93,7 +85,7 @@ test('it should filter the list by filterTerm and filter(filterKeys)', function(
   component.set('filter', ['name']);
   this.append();
 
-  andThen(function(){
+  Ember.run(function(){
     var items = $('.item');
     list.forEach(function(item){
       var selector = '.name:contains("' + item.get('name') + '")';
@@ -119,7 +111,7 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
   });
   this.append();
 
-  andThen(function(){
+  Ember.run(function(){
     var items = $('.item');
     list.forEach(function(item){
       var selector = '.id:contains("' + item.get('id') + '")';
