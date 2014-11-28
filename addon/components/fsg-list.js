@@ -14,8 +14,9 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
         return;
       }
 
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift('itemAction');
+      // TODO: refactor after tests
+      // this.sendAction.bind(this, 'itemAction').apply(this, args);
+      var args = Array.prototype.slice.call(arguments).unshift('itemAction');
       this.sendAction.apply(this, args);
     }
   },
@@ -25,7 +26,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   // filter can be a function of an array of list item keys
   // function : function(item, index, list)
   // keys     : ['id', 'name']
-  filter: null,
+  filter: [],
 
   _filterKeys: function(){
     var filter = this.get('filter');
@@ -63,7 +64,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
       return list.filter(this.get('_filterFn').bind(this));
     }
     return list;
-  }.property('list', 'filterTerm', '_filterKeys', '_filterFn'),
+  }.property('list.[]', 'filterTerm', '_filterKeys', '_filterFn'),
 
   // ---------- sort
   // TODO: the followng won't work, make a pull request to ember?
