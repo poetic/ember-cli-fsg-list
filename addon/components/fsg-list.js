@@ -24,7 +24,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   filterKeys: [],
   filterTerm: '',
   filterTermPurified: function(){
-    return this.get('filterTerm').toLowerCase().replace(/\s+/g, '');
+    return this._purify(this.get('filterTerm'));
   }.property('filterTerm'),
   // implimentation of filter callback in ember Enumerable
   // http://emberjs.com/api/classes/Ember.Enumerable.html#method_filter
@@ -32,15 +32,17 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
     var addString = function(result, key){
       return result + item.get(key);
     };
-    var stack = this.get('filterKeys').reduce(addString, '')
-                    .toLowerCase().replace(/\s+/g, '');
+    var stack = this.get('filterKeys').reduce(addString, '');
+    stack = this._purify(stack);
     var needle = this.get('filterTermPurified');
     return stack.indexOf(needle) > -1;
   },
 
   _fList: function(){
     // do not filter if there is no filter keys or a filter term
-    var filterEnabled = this.get('filterTerm') && this.get('filterKeys') && this.filterFn;
+    var filterEnabled = this.get('filterTerm') &&
+                        this.get('filterKeys') &&
+                        this.filterFn;
     var list = this.get('list');
 
     if(filterEnabled){
@@ -108,7 +110,12 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   },
 
   // result
-  fsgList: Ember.computed.alias('_fsgList')
+  fsgList: Ember.computed.alias('_fsgList'),
+
+  // helper fns
+  _purify: function(dirtyStr){
+    return dirtyStr.toLowerCase().replace(/\s+/g, '');
+  },
 });
 
 export default FilteredSortedGroupedListComponent;

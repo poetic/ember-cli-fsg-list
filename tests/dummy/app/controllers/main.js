@@ -14,8 +14,8 @@ var MainController = Ember.Controller.extend({
 
   filterTerm: '',
   filterKeys: ['name'],
-  filterFn: function(){
-
+  filterFn: function(item){
+    return item.get('id') > this.get('filterTerm');
   },
 });
 
