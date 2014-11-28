@@ -42,7 +42,7 @@ test('it renders', function() {
 });
 
 test('it shows a list of partials', function(){
-  expect(list.length);
+  expect(5);
 
   var component = this.subject();
   component.set('list', list);
@@ -55,6 +55,31 @@ test('it shows a list of partials', function(){
       var name = items.eq(index).find('.name').text();
       equal(name, item.get('name'));
     });
+  });
+});
+
+test('it should show new item when we add one', function(){
+  expect(2);
+
+  var listCopy = Ember.copy(list);
+
+  var component = this.subject();
+  component.set('list', listCopy);
+  component.set('itemPartial', 'person');
+  this.append();
+
+  Ember.run(function(){
+    equal($('.item').length, 5);
+  });
+
+  Ember.run(function(){
+    listCopy.pushObject(Ember.Object.create({
+      id: 100, name: 'Mike Chun', occupation: 'Web Designer'
+    }));
+  });
+
+  Ember.run(function(){
+    equal($('.item').length, 6);
   });
 });
 
@@ -80,22 +105,6 @@ test('it should filter the list by filterTerm and filter(filterKeys)', function(
       }
     });
   });
-
-  // push new object to list
-  // andThen(function(){
-  //   list.pushObject(Ember.Object.create({
-  //     id: 100, name: 'Mike Chun', occupation: 'Web Designer'
-  //   }));
-  // });
-
-  // andThen(function(){
-  //   equal($('.item').length, 2);
-  // });
-
-  // andThen(function(){
-  //   list.popObject();
-  // });
-  // TODO: change add new key to filter
 });
 
 test('it should filter the list by filterTerm and filter(filterFn)', function(){
