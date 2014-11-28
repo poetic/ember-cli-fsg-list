@@ -9,3 +9,9 @@ span.name {
   display: inline-block;
   width: 150px;
 }
+
+button {
+  font-size: 15px;
+  width: 200px;
+  height: 40px;
+}

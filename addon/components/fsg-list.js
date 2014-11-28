@@ -68,21 +68,19 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
 
   // ---------- sort
   // TODO: the followng won't work, make a pull request to ember?
-  // sortOrders: []
-  // _fsList: Ember.computed.sort('_fList', 'sortOrders')
-
   sortOrders: [],
+  _fsList: Ember.computed.sort('_fList', 'sortOrders'),
+  // _fsList: function(){
+  //   console.log('sort', this.get('sortOrders'));
+  //   var sortEnabled = this.get('sortOrders') && this.get('sortOrders').length;
+  //   var fList = this.get('_fList');
 
-  _fsList: function(){
-    var sortEnabled = this.get('sortOrders') && this.sortOrders.length;
-    var fList = this.get('_fList');
-
-    if(sortEnabled){
-      return fList;
-    } else {
-      return fList.sortBy.apply(fList, this.get('sortOrders'));
-    }
-  }.property('_fList'),
+  //   if(sortEnabled){
+  //     return fList.sortBy.apply(fList, this.get('sortOrders'));
+  //   } else {
+  //     return fList;
+  //   }
+  // }.property('_fList'),
 
   // ---------- group
   groupFn: null,

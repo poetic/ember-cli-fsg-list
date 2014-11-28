@@ -1,6 +1,10 @@
 <h2>Main</h2>
-Filter: {{input value=filterTerm}}
-
+<p>Filter: {{input value=filterTerm}}</p>
+<p>
+  Order:
+  <button {{action 'toggleOrder' 'occupationOrder'}}> occupation {{occupationOrder}}  </button>
+  <button {{action 'toggleOrder' 'nameOrder'}}> name  {{nameOrder}}  </button>
+</p>
 <ul>
   {{fsg-list
 
@@ -9,5 +13,7 @@ Filter: {{input value=filterTerm}}
 
     filterTerm  = filterTerm
     filter      = filterKeys
+
+    sortOrders  = sortOrders
   }}
 </ul>

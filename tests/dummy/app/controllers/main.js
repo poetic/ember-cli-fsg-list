@@ -17,6 +17,28 @@ var MainController = Ember.Controller.extend({
   filterFn: function(item){
     return item.get('id') > this.get('filterTerm');
   },
+
+  sortOrders: function(){
+    var orders = [];
+
+    ['occupationOrder', 'nameOrder'].forEach(function(orderKey){
+      if(this.get(orderKey)){
+        orders.pushObject(orderKey.replace(/Order$/, ':') + this.get(orderKey));
+      }
+    }.bind(this));
+
+    return orders;
+  }.property('occupationOrder', 'nameOrder'),
+
+  actions: {
+    toggleOrder: function(key){
+      if(this.get(key) === 'asc'){
+        this.set(key, 'desc');
+      } else {
+        this.set(key, 'asc');
+      }
+    },
+  }
 });
 
 export default MainController;

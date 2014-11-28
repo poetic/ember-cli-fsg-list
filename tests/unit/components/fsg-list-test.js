@@ -124,3 +124,16 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
     });
   });
 });
+
+test('it can be sorted by sortOrders', function(){
+  expect(1);
+
+  var component = this.subject();
+  component.set('list', list);
+  component.set('itemPartial', 'person');
+  component.set('sortOrders', ['occupation:desc', 'name:desc']);
+  this.append();
+
+  var sequence = $('.item .id').text();
+  deepEqual(sequence, '21435');
+});
