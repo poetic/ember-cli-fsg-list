@@ -20,39 +20,52 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
     }
   },
 
-  // filter
-  filterKeys: [],
-  filterTerm: '',
-  filterTermPurified: function(){
-    return this._purify(this.get('filterTerm'));
-  }.property('filterTerm'),
-  // implimentation of filter callback in ember Enumerable
-  // http://emberjs.com/api/classes/Ember.Enumerable.html#method_filter
-  filterFn: function(item){
+  // ---------- filter
+  filterTerm: null,
+  // filter can be a function of an array of list item keys
+  // function : function(item, index, list)
+  // keys     : ['id', 'name']
+  filter: null,
+
+  _filterKeys: function(){
+    var filter = this.get('filter');
+    if(typeof filter !== 'function' && filter.length > 0) {
+      return this.get('filter');
+    }
+  }.property('filter.[]'),
+
+  _filterFn: function(){
+    if(typeof this.get('filter') === 'function') {
+      return this.get('filter');
+    }
+  }.property('filter'),
+
+  _defaultFilterFn: function(item){
     var addString = function(result, key){
       return result + item.get(key);
     };
-    var stack = this.get('filterKeys').reduce(addString, '');
+    var stack = this.get('_filterKeys').reduce(addString, '');
     stack = this._purify(stack);
-    var needle = this.get('filterTermPurified');
+    var needle = this._purify(this.get('filterTerm'));
     return stack.indexOf(needle) > -1;
   },
 
   _fList: function(){
-    // do not filter if there is no filter keys or a filter term
-    var filterEnabled = this.get('filterTerm') &&
-                        this.get('filterKeys') &&
-                        this.filterFn;
     var list = this.get('list');
 
-    if(filterEnabled){
-      return list.filter(this.filterFn.bind(this));
-    } else {
+    if(!this.get('filterTerm')){
       return list;
     }
-  }.property('filterTerm', 'filterKeys.[]'),
+    if(this.get('_filterKeys')) {
+      return list.filter(this.get('_defaultFilterFn').bind(this));
+    }
+    if(this.get('_filterFn')) {
+      return list.filter(this.get('_filterFn').bind(this));
+    }
+    return list;
+  }.property('list', 'filterTerm', '_filterKeys', '_filterFn'),
 
-  // sort
+  // ---------- sort
   // TODO: the followng won't work, make a pull request to ember?
   // sortOrders: []
   // _fsList: Ember.computed.sort('_fList', 'sortOrders')
@@ -70,7 +83,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
     }
   }.property('_fList'),
 
-  // group
+  // ---------- group
   groupFn: null,
   titleKeys: [],
 

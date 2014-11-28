@@ -12,7 +12,7 @@ var MainController = Ember.Controller.extend({
   }),
   itemPartial: 'person',
 
-  filterTerm: '',
+  filterTerm: null,
   filterKeys: ['name'],
   filterFn: function(item){
     return item.get('id') > this.get('filterTerm');
