@@ -19,6 +19,11 @@ list = Ember.A(list);
 moduleForComponent('fsg-list', 'FsgListComponent', {
   // specify the other units that are required for this test
   needs: ['template:person'],
+  setup: function(){
+    var component = this.subject();
+    component.set('list', list);
+    component.set('itemPartial', 'person');
+  },
 });
 
 test('it renders', function() {
@@ -36,9 +41,6 @@ test('it renders', function() {
 test('it shows a list of partials', function(){
   expect(5);
 
-  var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   this.append();
 
   Ember.run(function(){
@@ -79,8 +81,6 @@ test('it should filter the list by filterTerm and filter(filterKeys)', function(
   expect(5);
 
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('filterTerm', 'Chun');
   component.set('filterBy', ['name']);
   this.append();
@@ -103,8 +103,6 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
   expect(5);
 
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('filterTerm', 'Chun');
   component.set('filterBy', function(item){
     return item.get('id') > 3;
@@ -129,8 +127,6 @@ test('it can be sorted by an array of strings', function(){
   expect(1);
 
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('sortBy', ['occupation:desc', 'name:desc']);
   this.append();
 
@@ -153,8 +149,6 @@ test('it can be sorted by a function', function(){
   expect(1);
 
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('sortBy', function(a, b){
     return b.get('id') - a.get('id');
   });
@@ -168,8 +162,6 @@ test('it can be grouped by a function', function(){
   expect(3);
 
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('groupBy', function(item){
     return item.get('occupation');
   });
@@ -184,8 +176,6 @@ test('it can be filtered, sorted and grouped', function(){
   expect(2);
 
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('sortBy', ['name:desc']);
   component.set('filterBy', ['name', 'occupation']);
   component.set('filterTerm', 'm');
@@ -205,8 +195,6 @@ test('it can trigger an action when clicked', function(){
 
   window._counter = 0;
   var component = this.subject();
-  component.set('list', list);
-  component.set('itemPartial', 'person');
   component.set('actionName', 'clickItem');
   this.append();
 

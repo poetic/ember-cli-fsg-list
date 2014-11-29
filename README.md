@@ -18,6 +18,7 @@ filter: a
 - In your controller 'app/controllers/demo.js':
 ```javascript
 var DemoController = Ember.Controller.extend({
+  // you MUST provide an Ember array of Ember object, E.G. a model of list
   list: [
     {id: 1 , name: 'Chun Yang'       , occupation: 'Web Developer'} ,
     {id: 2 , name: 'Dummy A'         , occupation: 'Web Developer'} ,
@@ -27,10 +28,11 @@ var DemoController = Ember.Controller.extend({
   ].map(function(obj){
     return Ember.Object.create(obj);
   }),
+
   // you MUST provide a partial for each item in the list
   itemPartial: 'person',
 
-  // ---------- Filter
+  // ---------- Filter(optional)
   filterTerm: null, // this is bounded to a input element in the template
   // you can assign an array OR a function to filterBy
   filterKeys: ['name'],
@@ -38,21 +40,24 @@ var DemoController = Ember.Controller.extend({
     return item.get('id') > this.get('filterTerm');
   },
 
-  // ---------- Sort
+  // ---------- Sort(optional)
   // you can assign an array OR a function to sortBy
   sortKeys: ['name', 'occupation:desc', 'id:asc'],
   sortFn: function(a, b){
     return a.get('id') - b.get('id');
   },
 
-  // ---------- Group
+  // ---------- Group(optional)
   // you can provide a function to groupBy
   groupFn: function(item){
     return item.occupation;
   },
 
-  // ---------- Actions
+  // ---------- Actions(optional)
   actions: {
+    logToConsole: function(item){
+      console.log('The item you clicked is: ', item);
+    }
   }
 });
 ```
@@ -68,24 +73,26 @@ var DemoController = Ember.Controller.extend({
     filterBy    = filterKeys
     sortBy      = sortKeys
     groupBy     = groupFn
+    actionName  = 'logToConsole'
   }}
 </ul>
 ```
 
 - In your partial template 'app/template/person.hbs'
 ```html
-{{#with item}}
 <li class="item">
-<!-- _isTitle and _title are provided by the groupBy function -->
+  <!-- _isTitle and _title are provided by the groupBy function -->
   {{#if _isTitle}}
     <span class="title">{{_title}}</span>
   {{else}}
-    <span class="id">{{id}}</span>
-    <span class="name">{{name}}</span>
-    <span class="occupation">{{occupation}}</span>
+    <!-- _selectItem will bubble up to 'logToConsole' in your controller-->
+    <div {{action '_selectItem' item}}>
+      <span class="id">{{id}}</span>
+      <span class="name">{{name}}</span>
+      <span class="occupation">{{occupation}}</span>
+    </div>
   {{/if}}
 </li>
-{{/with}}
 ```
 
 # Variables:
