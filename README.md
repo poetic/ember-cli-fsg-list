@@ -1,5 +1,6 @@
 # Ember-cli-fsg-list
-fsg-list is a filterable, sortable, and groupable component for a list.
+ember-cli-fsg-list is an EmberCLI addon.
+It is a filterable, sortable, and groupable Ember component.
 You can also assign custom action to the items in the list.
 It is really helpful when you want to create something like this:
 <!---
@@ -14,6 +15,10 @@ filter: a
 - Chin*a*
 
 # Example:
+- In your ember app, run:
+```bash
+npm install ember-cli-fsg-list --save-dev
+```
 
 - In your controller 'app/controllers/demo.js':
 ```javascript
@@ -42,7 +47,7 @@ var DemoController = Ember.Controller.extend({
 
   // ---------- Sort(optional)
   // you can assign an array OR a function to sortBy
-  sortKeys: ['name', 'occupation:desc', 'id:asc'],
+  sortKeys: ['occupation', 'id:asc', 'name:desc'],
   sortFn: function(a, b){
     return a.get('id') - b.get('id');
   },
@@ -64,7 +69,7 @@ var DemoController = Ember.Controller.extend({
 
 - In your template 'app/templates/demo.hbs'
 ```javascript
-{{input value=filterTerm}}
+{{input value=filterTerm placeholder="name"}}
 <ul>
   {{fsg-list
     list        = list
@@ -82,14 +87,14 @@ var DemoController = Ember.Controller.extend({
 ```html
 <li class="item">
   <!-- _isTitle and _title are provided by the groupBy function -->
-  {{#if _isTitle}}
-    <span class="title">{{_title}}</span>
+  {{#if item._isTitle}}
+    <span class="title">{{item._title}}</span>
   {{else}}
     <!-- _selectItem will bubble up to 'logToConsole' in your controller-->
     <div {{action '_selectItem' item}}>
-      <span class="id">{{id}}</span>
-      <span class="name">{{name}}</span>
-      <span class="occupation">{{occupation}}</span>
+      <span class="id">{{item.id}}</span>
+      (<span class="occupation">{{item.occupation}}</span>)
+      <span class="name">{{item.name}}</span>
     </div>
   {{/if}}
 </li>
@@ -105,7 +110,7 @@ var DemoController = Ember.Controller.extend({
 - actionName  : string, action name in your controller
 
 # Emitted variables from the component to the partial template
-- item           : Ember object, a object from the input list
+- item           : Ember object, an object from the input list
 - item.\_isTitle : boolean, if this item is a group title
 - item.\_title   : string, output of the group function
 _ \_selectItem   : function, used to bubble up the action to your controller
