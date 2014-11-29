@@ -48,6 +48,10 @@ var MainController = Ember.Controller.extend({
         this.set(key, 'asc');
       }
     },
+    clickItem: function(item){
+      var element = Ember.$('.id:contains("' + item.get('id') + '")');
+      element.parent().toggleClass('active');
+    },
   }
 });
 

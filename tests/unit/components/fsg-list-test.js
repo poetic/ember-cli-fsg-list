@@ -180,7 +180,7 @@ test('it can be grouped by a function', function(){
   equal($('.item .title').length, 3);
 });
 
-test('ite can be filtered, sorted and grouped', function(){
+test('it can be filtered, sorted and grouped', function(){
   expect(2);
 
   var component = this.subject();
@@ -198,4 +198,20 @@ test('ite can be filtered, sorted and grouped', function(){
   equal($('.item .title').text().replace(/\s+/g, ''),
         'ManagerQAWebDeveloper',
         'it is grouped');
+});
+
+test('it can trigger an action when clicked', function(){
+  expect(1);
+
+  window._counter = 0;
+  var component = this.subject();
+  component.set('list', list);
+  component.set('itemPartial', 'person');
+  component.set('actionName', 'clickItem');
+  this.append();
+
+  $('.item div').first().click();
+  Ember.run(function(){
+    equal(window._counter, 1);
+  });
 });

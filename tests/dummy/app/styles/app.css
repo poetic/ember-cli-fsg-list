@@ -15,3 +15,7 @@ button {
   width: 200px;
   height: 40px;
 }
+
+.active {
+  background: #337ab7;
+}
