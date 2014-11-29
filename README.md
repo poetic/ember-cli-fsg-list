@@ -100,7 +100,7 @@ var DemoController = Ember.Controller.extend({
 </li>
 ```
 
-# Variables:
+# Component variables:
 - list        : Ember array of Ember objects
 - itemPartial : string, template name
 - filterTerm  : string
@@ -109,8 +109,8 @@ var DemoController = Ember.Controller.extend({
 - groupBy     : a function
 - actionName  : string, action name in your controller
 
-# Emitted variables from the component to the partial template
+# Emitted variables from the component to partial template:
 - item           : Ember object, an object from the input list
 - item.\_isTitle : boolean, if this item is a group title
 - item.\_title   : string, output of the group function
-_ \_selectItem   : function, used to bubble up the action to your controller
+- \_selectItem   : function, used to bubble up the action to your controller
