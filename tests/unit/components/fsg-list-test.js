@@ -43,12 +43,10 @@ test('it shows a list of partials', function(){
 
   this.append();
 
-  Ember.run(function(){
-    var items = $('.item');
-    list.forEach(function(item, index){
-      var name = items.eq(index).find('.name').text();
-      equal(name, item.get('name'));
-    });
+  var items = $('.item');
+  list.forEach(function(item, index){
+    var name = items.eq(index).find('.name').text();
+    equal(name, item.get('name'));
   });
 });
 
@@ -62,9 +60,7 @@ test('it should show new item when we add one', function(){
   component.set('itemPartial', 'person');
   this.append();
 
-  Ember.run(function(){
-    equal($('.item').length, 5);
-  });
+  equal($('.item').length, 5);
 
   Ember.run(function(){
     listCopy.pushObject(Ember.Object.create({
@@ -72,9 +68,7 @@ test('it should show new item when we add one', function(){
     }));
   });
 
-  Ember.run(function(){
-    equal($('.item').length, 6);
-  });
+  equal($('.item').length, 6);
 });
 
 test('it should filter the list by filterTerm and filter(filterKeys)', function(){
@@ -85,17 +79,15 @@ test('it should filter the list by filterTerm and filter(filterKeys)', function(
   component.set('filterBy', ['name']);
   this.append();
 
-  Ember.run(function(){
-    var items = $('.item');
-    list.forEach(function(item){
-      var selector = '.name:contains("' + item.get('name') + '")';
-      var exist = !!items.find(selector).length;
-      if(item.get('name') === 'Chun Yang'){
-        equal(exist, true);
-      } else {
-        equal(exist, false);
-      }
-    });
+  var items = $('.item');
+  list.forEach(function(item){
+    var selector = '.name:contains("' + item.get('name') + '")';
+    var exist = !!items.find(selector).length;
+    if(item.get('name') === 'Chun Yang'){
+      equal(exist, true);
+    } else {
+      equal(exist, false);
+    }
   });
 });
 
@@ -109,17 +101,15 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
   });
   this.append();
 
-  Ember.run(function(){
-    var items = $('.item');
-    list.forEach(function(item){
-      var selector = '.id:contains("' + item.get('id') + '")';
-      var exist = !!items.find(selector).length;
-      if(item.get('id') > 3){
-        equal(exist, true);
-      } else {
-        equal(exist, false);
-      }
-    });
+  var items = $('.item');
+  list.forEach(function(item){
+    var selector = '.id:contains("' + item.get('id') + '")';
+    var exist = !!items.find(selector).length;
+    if(item.get('id') > 3){
+      equal(exist, true);
+    } else {
+      equal(exist, false);
+    }
   });
 });
 
@@ -133,16 +123,14 @@ test('it can be sorted by an array of strings', function(){
   var sequence = $('.item .id').text();
   deepEqual(sequence, '21435');
 
-  // // TODO: test dynamic update, the following is not working
-  // // change orders
+  // TODO: test dynamic update, the following is not working
+  // change orders
   // Ember.run(function(){
   //   component.set('sortBy', ['id']);
   // });
 
-  // Ember.run(function(){
-  //   sequence = $('.item .id').text();
-  //   deepEqual(sequence, '12345');
-  // });
+  // sequence = $('.item .id').text();
+  // deepEqual(sequence, '12345');
 });
 
 test('it can be sorted by a function', function(){
@@ -199,7 +187,5 @@ test('it can trigger an action when clicked', function(){
   this.append();
 
   $('.item div').first().click();
-  Ember.run(function(){
-    equal(window._counter, 1);
-  });
+  equal(window._counter, 1);
 });
