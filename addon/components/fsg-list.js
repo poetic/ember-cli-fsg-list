@@ -64,7 +64,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   },
 
   _fList: function(){
-    var list = this.get('list');
+    var list = this.get('list').toArray();
 
     if(!this.get('filterTerm')){
       return list;
@@ -98,7 +98,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   },
 
   _fsList: function(){
-    var list = this.get('_fList');
+    var list = this.get('_fList').toArray();
 
     if(this.get('_sortKeys')) {
       return list.sort(this.get('_defaultSortFn').bind(this));
@@ -114,7 +114,7 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
 
   _fsgList: function(){
     var groupBy = this.get('groupBy');
-    var list = this.get('_fsList');
+    var list = this.get('_fsList').toArray();
 
     if(!groupBy){
       return list;

@@ -114,7 +114,7 @@ test('it should filter the list by filterTerm and filter(filterFn)', function(){
 });
 
 test('it can be sorted by an array of strings', function(){
-  expect(1);
+  expect(2);
 
   var component = this.subject();
   component.set('sortBy', ['occupation:desc', 'name:desc']);
@@ -123,14 +123,12 @@ test('it can be sorted by an array of strings', function(){
   var sequence = $('.item .id').text();
   deepEqual(sequence, '21435');
 
-  // TODO: test dynamic update, the following is not working
-  // change orders
-  // Ember.run(function(){
-  //   component.set('sortBy', ['id']);
-  // });
+  Ember.run(function(){
+    component.set('sortBy', ['id']);
+  });
 
-  // sequence = $('.item .id').text();
-  // deepEqual(sequence, '12345');
+  sequence = $('.item .id').text();
+  deepEqual(sequence, '12345');
 });
 
 test('it can be sorted by a function', function(){
