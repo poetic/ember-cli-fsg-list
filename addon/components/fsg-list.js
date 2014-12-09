@@ -34,8 +34,10 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
       // Bubble action up to the controller
       if(this.get('actionName')){
         // Only for testing
-        if(DummyENV && DummyENV.environment === 'test' && window._counter >=0 ) {
-          window._counter += 1;
+        if(typeof DummyENV !== 'undefined') {
+          if(DummyENV.environment === 'test' && window._counter >=0 ) {
+            window._counter += 1;
+          }
         }
         this.sendAction.bind(this, 'actionName').apply(this, arguments);
       }
