@@ -1,4 +1,5 @@
 # Ember-cli-fsg-list
+[![Build Status](https://travis-ci.org/poetic/ember-cli-fsg-list.svg)](https://travis-ci.org/poetic/ember-cli-fsg-list)
 ember-cli-fsg-list is an EmberCLI addon.
 It is a filterable, sortable, and groupable Ember component.
 You can also assign custom action to the items in the list.
