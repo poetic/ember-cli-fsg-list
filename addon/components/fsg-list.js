@@ -144,11 +144,12 @@ var FilteredSortedGroupedListComponent = Ember.Component.extend({
   },
 
   _listFromGroups: function(groups){
+    var component = this;
     var list = [];
     for(var key in groups){
       var titleObj = {_isTitle: true, _title: key};
-      this.get('groupTitleAttrs').forEach(function(attr){
-        var fn = this.get('attr');
+      component.get('groupTitleAttrs').forEach(function(attr){
+        var fn = component.get(attr);
         titleObj[attr] = fn(key);
       });
       list.pushObject(titleObj);
