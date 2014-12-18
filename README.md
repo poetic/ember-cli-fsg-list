@@ -37,6 +37,19 @@ var DemoController = Ember.Controller.extend({
   filterFn: function(item){
     return item.get('id') > this.get('filterTerm');
   },
+  // if you do not provide a filterFn, the _defaultFilterFn is used:
+  // E.G. 'a b' will match 'Abc', 'Dabc', 'De a b f' and so on.
+  _defaultFilterFn: function(item){
+    var purify = function(dirtyStr){
+      return dirtyStr.toLowerCase().replace(/\s+/g, '');
+    };
+    var getValue = function(key){
+      return item.get(key);
+    };
+    var stack  = purify(this.get('_filterKeys').map(getValue).join(''));
+    var needle = purify(this.get('filterTerm'));
+    return stack.indexOf(needle) > -1;
+  },
 
   // ---------- Sort(optional)
   // you can assign an array OR a function to sortBy
