@@ -2,17 +2,10 @@
 ember-cli-fsg-list is an EmberCLI addon.
 It is a filterable, sortable, and groupable Ember component.
 You can also assign custom action to the items in the list.
+
 It is really helpful when you want to create something like this:
-<!---
-TODO: use a dynamic gif to replace this
--->
-filter: a
-- A
-- *A*merica
-- *A*rgentina
-- C
-- C*a*nada
-- Chin*a*
+
+![](http://media.giphy.com/media/5xaOcLzHYY2LuCa8MDK/giphy.gif)
 
 # Example:
 - In your ember app, run:
@@ -58,6 +51,14 @@ var DemoController = Ember.Controller.extend({
     return item.occupation;
   },
 
+  // you can provide custom attributes to the title item in a group
+  // each attribute is a function with the group title obtained from groupFn
+  // as argument
+  groupTitleAttrs: ['titleImageUrl'],
+  titleImageUrl: function(title){
+    return 'http://' + title + '.com';
+  },
+
   // ---------- Actions(optional)
   actions: {
     logToConsole: function(item){
@@ -72,13 +73,15 @@ var DemoController = Ember.Controller.extend({
 {{input value=filterTerm placeholder="name"}}
 <ul>
   {{fsg-list
-    list        = list
-    itemPartial = itemPartial
-    filterTerm  = filterTerm
-    filterBy    = filterKeys
-    sortBy      = sortKeys
-    groupBy     = groupFn
-    actionName  = 'logToConsole'
+    list            = list
+    itemPartial     = itemPartial
+    filterTerm      = filterTerm
+    filterBy        = filterKeys
+    sortBy          = sortKeys
+    groupBy         = groupFn
+    groupTitleAttrs = groupTitleAttrs
+    actionName      = 'logToConsole'
+    titleImageUrl   = titleImageUrl
   }}
 </ul>
 ```
@@ -89,6 +92,7 @@ var DemoController = Ember.Controller.extend({
   <!-- _isTitle and _title are provided by the groupBy function -->
   {{#if item._isTitle}}
     <span class="title">{{item._title}}</span>
+    <img {{bind-attr src=item.titleImageUrl}}/>
   {{else}}
     <!-- _selectItem will bubble up to 'logToConsole' in your controller-->
     <div {{action '_selectItem' item}}>
@@ -101,16 +105,17 @@ var DemoController = Ember.Controller.extend({
 ```
 
 # Component variables:
-- list        : Ember array of Ember objects
-- itemPartial : string, template name
-- filterTerm  : string
-- filterBy    : array of strings OR function
-- sortBy      : array of strings OR function
-- groupBy     : a function
-- actionName  : string, action name in your controller
+- list:            Ember array of Ember objects
+- itemPartial:     string, template name
+- filterTerm:      string
+- filterBy:        array of strings OR function
+- sortBy:          array of strings OR function
+- groupBy:         a function
+- groupTitleAttrs: array of strings
+- actionName:      string, action name in your controller
 
 # Emitted variables from the component to partial template:
-- item           : Ember object, an object from the input list
-- item.\_isTitle : boolean, if this item is a group title
-- item.\_title   : string, output of the group function
-- \_selectItem   : function, used to bubble up the action to your controller
+- item:           Ember object, an object from the input list
+- item.\_isTitle: boolean, if this item is a group title
+- item.\_title:   string, output of the group function
+- \_selectItem:   function, used to bubble up the action to your controller
